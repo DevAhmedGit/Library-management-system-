@@ -1,0 +1,246 @@
+def show_book():
+    with open("Library.txt") as books:
+        print(books.read())
+
+
+def add_book():
+    while True:
+        added = input("Enter the book you need to add: ")
+        category = input("Enter the book category: ")
+        with open("Library.txt", "a") as books:
+            books.write(f"\n{added}[{category}]")
+
+        another = input("Add another book? (yes/no): ").lower()
+        if another != "yes":
+            break
+
+
+def delete_book():
+    with open("Library.txt", "r") as books:
+        all_books = books.readlines()
+
+    print(all_books)
+    delete = input("Enter the book you need to delete: ").strip()
+    initial_count = len(all_books)
+    all_books = [book for book in all_books if book.strip() != delete]
+
+    with open("Library.txt", "w") as books:
+        books.writelines(all_books)
+
+    final_count = len(all_books)
+
+    if initial_count > final_count:
+        print("Book deleted successfully.")
+    else:
+        print("Book not found.")
+
+
+def search_book():
+    with open("Library.txt", "r") as all_book:
+        available_books = all_book.read().splitlines()
+
+    searched_book = input("Enter the book you search for: ").strip()
+    if searched_book in available_books:
+        print(searched_book, "is available")
+    else:
+        print(searched_book, "is not available")
+
+
+def add_b_book():
+    while True:
+        added_b = input("Enter the Borrowed book you need to add: ")
+        name = input("Enter the name of the one who borrowed the book: ")
+        with open("Borrowed.txt", "a") as books:
+            books.write(f"\n{added_b}[{name}]")
+
+        another = input("Add another Borrowed book? (yes/no): ").lower()
+        if another != "yes":
+            break
+
+
+def show_b_books():
+    with open("Borrowed.txt") as books:
+        print(books.read())
+
+
+def search_b_book():
+    with open("Borrowed.txt", "r") as all_book:
+        borrowed_books = all_book.read().splitlines()
+
+    searched_book = input("Enter the borrowed book you search for: ").strip()
+    if searched_book in borrowed_books:
+        print(searched_book, "is borrowed")
+    else:
+        print(searched_book, "is not borrowed")
+
+
+def show_discounts():
+    with open("Discount.txt") as discount:
+        print(discount.read())
+
+
+def add_discount():
+    while True:
+        dis_book = input("Enter the book that has a discount: ")
+        dis_added = input("Enter the discount you need to add: ")
+        dis_time = input("Enter how long the discount lasts: ")
+        with open("Discount.txt", "a") as discount:
+            discount.write(f"\n{dis_book}[{dis_added}][{dis_time}]")
+
+        another = input("Add another Discount? (yes/no): ").lower()
+        if another != "yes":
+            break
+
+
+def delete_discount():
+    with open("Discount.txt", "r") as discount:
+        discount_books = discount.readlines()
+
+    delete = input("Enter the discount you need to delete: ").strip()
+    discount_books = [d for d in discount_books if d.strip() != delete]
+
+    with open("Discount.txt", "w") as discount:
+        discount.writelines(discount_books)
+
+    if len(discount_books) < len(discount.readlines()):
+        print("Discount deleted successfully.")
+    else:
+        print("Not found.")
+
+
+def search_discount():
+    with open("Discount.txt", "r") as discount_books:
+        available_discounts = discount_books.read().splitlines()
+
+    searched_discounts = input("Enter the discount you search for: ").strip()
+    if searched_discounts in available_discounts:
+        print(searched_discounts, "is available")
+    else:
+        print(searched_discounts, "is not available")
+
+
+def update_book():
+    with open("Library.txt", "r") as books:
+        all_books = books.readlines()
+
+    print("\n     >library system<")
+    print(all_books)
+    books_update = input("Enter the book you need to update: ").strip()
+    if books_update in [book.strip() for book in all_books]:
+        new_name = input("Enter the new name of the book (leave blank to keep current): ")
+        new_category = input("Enter the new category of the book (leave blank to keep current): ")
+
+        new_name = new_name if new_name else books_update
+        new_category = new_category if new_category else all_books[all_books.index(books_update)].split('[')[1][:-2]
+
+        all_books = [f"{new_name}[{new_category}]\n" if book.strip() == books_update else book for book in all_books]
+
+        with open("Library.txt", "w") as books:
+            books.writelines(all_books)
+
+        print("Book updated successfully.")
+    else:
+        print("Book not found.")
+
+
+def return_book():
+    with open("Borrowed.txt", "r") as borrowed_books:
+        all_borrowed_books = borrowed_books.readlines()
+
+    print("\n     >Borrowed Books<")
+    print(all_borrowed_books)
+    book_to_return = input("Enter the borrowed book you want to return: ").strip()
+
+    if book_to_return in [book.strip().split('[')[0] for book in all_borrowed_books]:
+        all_borrowed_books = [book for book in all_borrowed_books if book.strip().split('[')[0] != book_to_return]
+        with open("Borrowed.txt", "w") as borrowed_books:
+            borrowed_books.writelines(all_borrowed_books)
+
+        print("Book returned successfully.")
+    else:
+        print("Book not found in borrowed list.")
+
+
+def book_statistics():
+    with open("Library.txt", "r") as books:
+        all_books = books.readlines()
+
+    with open("Borrowed.txt", "r") as borrowed_books:
+        all_borrowed_books = borrowed_books.readlines()
+
+    total_books = len(all_books)
+    total_borrowed = len(all_borrowed_books)
+
+    print("Total books available:", total_books)
+    print("Total books borrowed:", total_borrowed)
+
+
+def show_categories():
+    with open("Library.txt", "r") as books:
+        all_books = books.readlines()
+
+    categories = set(book.strip().split('[')[1][:-1] for book in all_books if '[' in book)
+    print("Available categories:")
+    for category in categories:
+        print(category)
+
+
+def main():
+    while True:
+        print("\n     >library system<")
+        print("1----> Show the list of the books")
+        print("2----> Add a new book")
+        print("3----> Delete a book")
+        print("4----> Search for a book")
+        print("5----> Add borrowed book")
+        print("6----> Show the list of borrowed books")
+        print("7----> Search for a borrowed book")
+        print("8----> Show the list of the Discounts")
+        print("9----> Add a new Discount")
+        print("10----> Delete a Discount")
+        print("11----> Search for a Discount")
+        print("12----> Update a book")
+        print("13----> Return a book")
+        print("14----> Show book statistics")
+        print("15----> Show categories")
+        print("16----> Exit")
+
+        action = input("Choose (1-16): ")
+        if action == "1":
+            show_book()
+        elif action == "2":
+            add_book()
+        elif action == "3":
+            delete_book()
+        elif action == "4":
+            search_book()
+        elif action == "5":
+            add_b_book()
+        elif action == "6":
+            show_b_books()
+        elif action == "7":
+            search_b_book()
+        elif action == "8":
+            show_discounts()
+        elif action == "9":
+            add_discount()
+        elif action == "10":
+            delete_discount()
+        elif action == "11":
+            search_discount()
+        elif action == "12":
+            update_book()
+        elif action == "13":
+            return_book()
+        elif action == "14":
+            book_statistics()
+        elif action == "15":
+            show_categories()
+        elif action == "16":
+            print("Exiting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+if __name__ == "__main__":
+    main()
